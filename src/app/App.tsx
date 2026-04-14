@@ -1,4 +1,6 @@
-﻿export function App() {
+﻿import React from "react";
+
+export function App() {
   return (
     <div className="app-stage">
       <div className="app-shell">
