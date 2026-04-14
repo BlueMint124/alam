@@ -1,0 +1,12 @@
+﻿:root {
+  color-scheme: dark;
+  --color-bg: #060b14;
+  --color-surface: rgba(12, 19, 34, 0.9);
+  --color-surface-elevated: rgba(18, 27, 48, 0.96);
+  --color-border: rgba(148, 163, 184, 0.2);
+  --color-text: #f3f7ff;
+  --color-muted: #9aa8bf;
+  --color-accent: #84c7ff;
+  --shadow-shell: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --radius-shell: 32px;
+}
