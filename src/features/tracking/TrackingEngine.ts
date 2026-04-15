@@ -24,13 +24,21 @@ export class TrackingEngine {
       return this.session;
     }
 
-    const nextProgress = this.estimator.estimate(activeSegment, this.getProgressSnapshot(activeSegment), event);
+    const nextProgress = this.estimator.estimate(
+      activeSegment,
+      this.getProgressSnapshot(activeSegment),
+      event,
+    );
+
+    if (!nextProgress.didAdvance) {
+      return this.session;
+    }
 
     this.session = {
       ...this.session,
-      remainingStops: nextProgress.remainingStops,
-      lastStopIndex: nextProgress.lastStopIndex,
-      lastPositionEvent: event,
+      remainingStops: nextProgress.snapshot.remainingStops,
+      lastStopIndex: nextProgress.snapshot.lastStopIndex,
+      lastPositionEvent: nextProgress.snapshot.lastPositionEvent,
     };
 
     return this.session;
@@ -42,21 +50,27 @@ export class TrackingEngine {
 
   private getActiveTransitSegment(): RouteTransitSegment {
     const activeSegment = this.session.route.segments.find(
-      (segment): segment is RouteTransitSegment => segment.id === this.session.activeSegmentId && segment.kind === "transit",
+      (segment): segment is RouteTransitSegment =>
+        segment.id === this.session.activeSegmentId && segment.kind === "transit",
     );
 
     if (!activeSegment) {
-      throw new Error(`Active transit segment not found for ${this.session.activeSegmentId}`);
+      throw new Error(
+        `Active transit segment not found for ${this.session.activeSegmentId}`,
+      );
     }
 
     return activeSegment;
   }
 
-  private getProgressSnapshot(activeSegment: RouteTransitSegment): TrackingProgressSnapshot {
+  private getProgressSnapshot(
+    activeSegment: RouteTransitSegment,
+  ): TrackingProgressSnapshot {
     return {
       activeSegment,
       lastStopIndex: this.session.lastStopIndex,
       remainingStops: this.session.remainingStops,
+      lastPositionEvent: this.session.lastPositionEvent,
     };
   }
 }

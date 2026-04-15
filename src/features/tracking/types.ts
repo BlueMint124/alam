@@ -18,4 +18,10 @@ export type TrackingProgressSnapshot = {
   activeSegment: RouteTransitSegment;
   lastStopIndex: number | null;
   remainingStops: number;
+  lastPositionEvent: TrackingPositionEvent | null;
+};
+
+export type TrackingEstimateResult = {
+  didAdvance: boolean;
+  snapshot: TrackingProgressSnapshot;
 };
