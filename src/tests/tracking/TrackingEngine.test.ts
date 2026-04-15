@@ -63,17 +63,17 @@ describe("TrackingEngine", () => {
     expect(engine.getState().remainingStops).toBe(1);
   });
 
-  it("clamps remaining stops at zero when position events move beyond the segment stop count", () => {
+  it("clamps remaining stops at zero at the valid segment boundary", () => {
     const engine = new TrackingEngine(createSessionState());
 
     engine.applyPosition({
-      stopIndex: 10,
+      stopIndex: 4,
       segmentId: "segment-2",
       timestamp: "2026-04-15T07:44:00+09:00",
     });
 
     expect(engine.getState().remainingStops).toBe(0);
-    expect(engine.getState().lastStopIndex).toBe(10);
+    expect(engine.getState().lastStopIndex).toBe(4);
   });
 
   it("ignores repeated or non-advancing stop indices", () => {
@@ -122,6 +122,61 @@ describe("TrackingEngine", () => {
     expect(engine.getState().lastStopIndex).toBe(2);
     expect(engine.getState().lastPositionEvent?.timestamp).toBe(
       "2026-04-15T07:39:00+09:00",
+    );
+  });
+
+  it("does not let impossible stop indices poison later valid progress", () => {
+    const engine = new TrackingEngine(createSessionState());
+
+    engine.applyPosition({
+      stopIndex: 10,
+      segmentId: "segment-2",
+      timestamp: "2026-04-15T07:35:00+09:00",
+    });
+
+    expect(engine.getState().remainingStops).toBe(4);
+    expect(engine.getState().lastStopIndex).toBeNull();
+
+    engine.applyPosition({
+      stopIndex: 2,
+      segmentId: "segment-2",
+      timestamp: "2026-04-15T07:36:00+09:00",
+    });
+
+    expect(engine.getState().remainingStops).toBe(2);
+    expect(engine.getState().lastStopIndex).toBe(2);
+  });
+
+  it("updates the watermark for newer duplicate events and blocks later out-of-order advancement", () => {
+    const engine = new TrackingEngine(createSessionState());
+
+    engine.applyPosition({
+      stopIndex: 2,
+      segmentId: "segment-2",
+      timestamp: "2026-04-15T07:38:00+09:00",
+    });
+
+    engine.applyPosition({
+      stopIndex: 2,
+      segmentId: "segment-2",
+      timestamp: "2026-04-15T07:40:00+09:00",
+    });
+
+    expect(engine.getState().lastStopIndex).toBe(2);
+    expect(engine.getState().lastPositionEvent?.timestamp).toBe(
+      "2026-04-15T07:40:00+09:00",
+    );
+
+    engine.applyPosition({
+      stopIndex: 3,
+      segmentId: "segment-2",
+      timestamp: "2026-04-15T07:39:00+09:00",
+    });
+
+    expect(engine.getState().remainingStops).toBe(2);
+    expect(engine.getState().lastStopIndex).toBe(2);
+    expect(engine.getState().lastPositionEvent?.timestamp).toBe(
+      "2026-04-15T07:40:00+09:00",
     );
   });
 });

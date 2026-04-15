@@ -30,7 +30,7 @@ export class TrackingEngine {
       event,
     );
 
-    if (!nextProgress.didAdvance) {
+    if (!nextProgress.didUpdate) {
       return this.session;
     }
 

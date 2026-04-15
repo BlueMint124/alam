@@ -11,29 +11,46 @@ export class ProgressEstimator {
     previousSnapshot: TrackingProgressSnapshot,
     event: TrackingPositionEvent,
   ): TrackingEstimateResult {
-    if (!Number.isInteger(event.stopIndex) || event.stopIndex < 0) {
+    if (this.isStaleEvent(previousSnapshot.lastPositionEvent, event)) {
       return {
         didAdvance: false,
+        didUpdate: false,
         snapshot: previousSnapshot,
       };
     }
 
-    if (this.isStaleEvent(previousSnapshot.lastPositionEvent, event)) {
+    const watermarkSnapshot: TrackingProgressSnapshot = {
+      ...previousSnapshot,
+      lastPositionEvent: event,
+    };
+
+    if (!Number.isInteger(event.stopIndex) || event.stopIndex < 0) {
       return {
         didAdvance: false,
-        snapshot: previousSnapshot,
+        didUpdate: true,
+        snapshot: watermarkSnapshot,
+      };
+    }
+
+    if (event.stopIndex > segment.stopCount) {
+      return {
+        didAdvance: false,
+        didUpdate: true,
+        snapshot: watermarkSnapshot,
       };
     }
 
     if (event.stopIndex <= (previousSnapshot.lastStopIndex ?? -1)) {
       return {
         didAdvance: false,
-        snapshot: previousSnapshot,
+        didUpdate: true,
+        snapshot: watermarkSnapshot,
       };
     }
 
     return {
       didAdvance: true,
+      didUpdate: true,
       snapshot: {
         activeSegment: segment,
         lastStopIndex: event.stopIndex,

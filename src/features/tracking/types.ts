@@ -23,5 +23,6 @@ export type TrackingProgressSnapshot = {
 
 export type TrackingEstimateResult = {
   didAdvance: boolean;
+  didUpdate: boolean;
   snapshot: TrackingProgressSnapshot;
 };
