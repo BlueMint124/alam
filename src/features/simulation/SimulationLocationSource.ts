@@ -10,13 +10,29 @@ export type SimulationScenario = {
   events: SimulationScenarioEvent[];
 };
 
+function cloneEvent(event: SimulationScenarioEvent): SimulationScenarioEvent {
+  return { ...event };
+}
+
+function cloneScenario(scenario: SimulationScenario): SimulationScenario {
+  return {
+    id: scenario.id,
+    name: scenario.name,
+    description: scenario.description,
+    events: scenario.events.map(cloneEvent),
+  };
+}
+
 export const demoSeoulTransferScenario: SimulationScenario =
-  demoSeoulTransferScenarioJson;
+  cloneScenario(demoSeoulTransferScenarioJson as SimulationScenario);
 
 export class SimulationLocationSource {
+  private readonly scenario: SimulationScenario;
   private eventIndex = 0;
 
-  constructor(private readonly scenario: SimulationScenario) {}
+  constructor(scenario: SimulationScenario) {
+    this.scenario = cloneScenario(scenario);
+  }
 
   next(): TrackingPositionEvent | null {
     const nextEvent = this.scenario.events[this.eventIndex];
@@ -27,7 +43,7 @@ export class SimulationLocationSource {
 
     this.eventIndex += 1;
 
-    return { ...nextEvent };
+    return cloneEvent(nextEvent);
   }
 
   reset() {
@@ -47,6 +63,6 @@ export class SimulationLocationSource {
   }
 
   getScenario() {
-    return this.scenario;
+    return cloneScenario(this.scenario);
   }
 }

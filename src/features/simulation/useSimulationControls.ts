@@ -16,46 +16,55 @@ export type SimulationControls = {
   resetScenario: () => void;
 };
 
+type SimulationState = {
+  scenarioId: string;
+  currentEventIndex: number;
+  lastEvent: TrackingPositionEvent | null;
+};
+
+function createSimulationState(scenario: SimulationScenario): SimulationState {
+  return {
+    scenarioId: scenario.id,
+    currentEventIndex: 0,
+    lastEvent: null,
+  };
+}
+
 export function useSimulationControls(
   scenario: SimulationScenario = demoSeoulTransferScenario,
 ): SimulationControls {
-  const sourceRef = React.useRef<SimulationLocationSource>(
-    new SimulationLocationSource(scenario),
+  const source = React.useMemo(
+    () => new SimulationLocationSource(scenario),
+    [scenario],
   );
-  const [currentEventIndex, setCurrentEventIndex] = React.useState(0);
-  const [lastEvent, setLastEvent] = React.useState<TrackingPositionEvent | null>(
-    null,
-  );
+  const [state, setState] = React.useState(() => createSimulationState(scenario));
 
-  React.useEffect(() => {
-    sourceRef.current = new SimulationLocationSource(scenario);
-    setCurrentEventIndex(0);
-    setLastEvent(null);
-  }, [scenario]);
+  const activeState =
+    state.scenarioId === scenario.id ? state : createSimulationState(scenario);
 
   const nextEvent = () => {
-    const event = sourceRef.current.next();
-    setCurrentEventIndex(sourceRef.current.getEventIndex());
+    const event = source.next();
 
-    if (event) {
-      setLastEvent(event);
-    }
+    setState({
+      scenarioId: scenario.id,
+      currentEventIndex: source.getEventIndex(),
+      lastEvent: event ?? activeState.lastEvent,
+    });
 
     return event;
   };
 
   const resetScenario = () => {
-    sourceRef.current.reset();
-    setCurrentEventIndex(0);
-    setLastEvent(null);
+    source.reset();
+    setState(createSimulationState(scenario));
   };
 
   return {
     scenario,
-    currentEventIndex,
-    totalEvents: sourceRef.current.getTotalEvents(),
-    isComplete: sourceRef.current.isComplete(),
-    lastEvent,
+    currentEventIndex: activeState.currentEventIndex,
+    totalEvents: source.getTotalEvents(),
+    isComplete: source.isComplete(),
+    lastEvent: activeState.lastEvent,
     nextEvent,
     resetScenario,
   };
