@@ -179,4 +179,31 @@ describe("TrackingEngine", () => {
       "2026-04-15T07:40:00+09:00",
     );
   });
+
+  it("preserves the watermark when a newer duplicate omits its timestamp", () => {
+    const engine = new TrackingEngine(createSessionState());
+
+    engine.applyPosition({
+      stopIndex: 2,
+      segmentId: "segment-2",
+      timestamp: "2026-04-15T07:40:00+09:00",
+    });
+
+    engine.applyPosition({
+      stopIndex: 2,
+      segmentId: "segment-2",
+    });
+
+    engine.applyPosition({
+      stopIndex: 3,
+      segmentId: "segment-2",
+      timestamp: "2026-04-15T07:39:00+09:00",
+    });
+
+    expect(engine.getState().remainingStops).toBe(2);
+    expect(engine.getState().lastStopIndex).toBe(2);
+    expect(engine.getState().lastPositionEvent?.timestamp).toBe(
+      "2026-04-15T07:40:00+09:00",
+    );
+  });
 });

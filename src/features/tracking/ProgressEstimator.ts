@@ -11,7 +11,16 @@ export class ProgressEstimator {
     previousSnapshot: TrackingProgressSnapshot,
     event: TrackingPositionEvent,
   ): TrackingEstimateResult {
-    if (this.isStaleEvent(previousSnapshot.lastPositionEvent, event)) {
+    const previousTimestamp = this.parseTimestamp(
+      previousSnapshot.lastPositionEvent?.timestamp,
+    );
+    const nextTimestamp = this.parseTimestamp(event.timestamp);
+
+    if (
+      previousTimestamp !== null &&
+      nextTimestamp !== null &&
+      nextTimestamp < previousTimestamp
+    ) {
       return {
         didAdvance: false,
         didUpdate: false,
@@ -19,15 +28,18 @@ export class ProgressEstimator {
       };
     }
 
+    const nextWatermark =
+      nextTimestamp === null ? previousSnapshot.lastPositionEvent : event;
     const watermarkSnapshot: TrackingProgressSnapshot = {
       ...previousSnapshot,
-      lastPositionEvent: event,
+      lastPositionEvent: nextWatermark,
     };
+    const didUpdateWatermark = nextWatermark !== previousSnapshot.lastPositionEvent;
 
     if (!Number.isInteger(event.stopIndex) || event.stopIndex < 0) {
       return {
         didAdvance: false,
-        didUpdate: true,
+        didUpdate: didUpdateWatermark,
         snapshot: watermarkSnapshot,
       };
     }
@@ -35,7 +47,7 @@ export class ProgressEstimator {
     if (event.stopIndex > segment.stopCount) {
       return {
         didAdvance: false,
-        didUpdate: true,
+        didUpdate: didUpdateWatermark,
         snapshot: watermarkSnapshot,
       };
     }
@@ -43,7 +55,7 @@ export class ProgressEstimator {
     if (event.stopIndex <= (previousSnapshot.lastStopIndex ?? -1)) {
       return {
         didAdvance: false,
-        didUpdate: true,
+        didUpdate: didUpdateWatermark,
         snapshot: watermarkSnapshot,
       };
     }
@@ -55,23 +67,9 @@ export class ProgressEstimator {
         activeSegment: segment,
         lastStopIndex: event.stopIndex,
         remainingStops: Math.max(0, segment.stopCount - event.stopIndex),
-        lastPositionEvent: event,
+        lastPositionEvent: nextWatermark,
       },
     };
-  }
-
-  private isStaleEvent(
-    previousEvent: TrackingPositionEvent | null,
-    nextEvent: TrackingPositionEvent,
-  ): boolean {
-    const previousTime = this.parseTimestamp(previousEvent?.timestamp);
-    const nextTime = this.parseTimestamp(nextEvent.timestamp);
-
-    if (previousTime === null || nextTime === null) {
-      return false;
-    }
-
-    return nextTime < previousTime;
   }
 
   private parseTimestamp(timestamp?: string): number | null {
