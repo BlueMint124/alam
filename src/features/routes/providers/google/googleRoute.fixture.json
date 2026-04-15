@@ -1,0 +1,11 @@
+{
+  "routes": [
+    {
+      "id": "google-route-1",
+      "summary": "Myeongdong Station to Seoul Station",
+      "durationMinutes": 18,
+      "departureTime": "2026-04-15T07:30:00+09:00",
+      "arrivalTime": "2026-04-15T07:48:00+09:00"
+    }
+  ]
+}
