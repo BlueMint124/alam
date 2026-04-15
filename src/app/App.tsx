@@ -1,4 +1,5 @@
-﻿import React from "react";
+import React from "react";
+import { HomeScreen } from "../screens/HomeScreen";
 
 export function App() {
   return (
@@ -8,7 +9,7 @@ export function App() {
           <h1>ArriveHae</h1>
         </header>
         <main className="app-main">
-          <p>Loading...</p>
+          <HomeScreen />
         </main>
       </div>
     </div>
