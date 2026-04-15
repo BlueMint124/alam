@@ -1,9 +1,12 @@
-﻿import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
+import type { RouteObject } from "react-router-dom";
 import { App } from "./App";
 
-export const router = createBrowserRouter([
+export const appRoutes: RouteObject[] = [
   {
     path: "/",
     element: <App />,
   },
-]);
+];
+
+export const router = createBrowserRouter(appRoutes);

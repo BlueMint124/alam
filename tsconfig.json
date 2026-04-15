@@ -12,6 +12,7 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "skipLibCheck": true,
+    "strict": true,
     "types": ["vite/client", "@testing-library/jest-dom"]
   },
   "include": ["src"]
