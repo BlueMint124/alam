@@ -5,7 +5,27 @@
       "summary": "Myeongdong Station to Seoul Station",
       "durationMinutes": 18,
       "departureTime": "2026-04-15T07:30:00+09:00",
-      "arrivalTime": "2026-04-15T07:48:00+09:00"
+      "arrivalTime": "2026-04-15T07:48:00+09:00",
+      "segments": [
+        {
+          "id": "google-route-1-segment-1",
+          "kind": "walk",
+          "instruction": "Walk to Myeongdong Station Exit 6"
+        },
+        {
+          "id": "google-route-1-segment-2",
+          "kind": "transit",
+          "instruction": "Subway Line 4 toward Danggogae",
+          "lineName": "Line 4",
+          "vehicleType": "subway",
+          "stopCount": 4
+        },
+        {
+          "id": "google-route-1-segment-3",
+          "kind": "walk",
+          "instruction": "Walk to Seoul Station AREX platform"
+        }
+      ]
     }
   ]
 }

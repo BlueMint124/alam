@@ -10,6 +10,22 @@ vi.mock("../features/routes/api/searchTransitRoutes", () => ({
 import { searchTransitRoutes } from "../features/routes/api/searchTransitRoutes";
 import { HomeScreen } from "./HomeScreen";
 
+const demoSegments: RouteOption["segments"] = [
+  {
+    id: "segment-1",
+    kind: "walk",
+    instruction: "Walk to Myeongdong Station Exit 6",
+  },
+  {
+    id: "segment-2",
+    kind: "transit",
+    instruction: "Subway Line 4 toward Danggogae",
+    lineName: "Line 4",
+    vehicleType: "subway",
+    stopCount: 4,
+  },
+];
+
 describe("HomeScreen", () => {
   it("renders resolved routes after searching", async () => {
     let resolveSearch: (routes: RouteOption[]) => void = () => undefined;
@@ -39,6 +55,7 @@ describe("HomeScreen", () => {
         durationMinutes: 18,
         departureTime: "2026-04-15T07:30:00+09:00",
         arrivalTime: "2026-04-15T07:48:00+09:00",
+        segments: demoSegments,
       } satisfies RouteOption,
     ]);
 
@@ -81,6 +98,7 @@ describe("HomeScreen", () => {
         durationMinutes: 18,
         departureTime: "2026-04-15T07:30:00+09:00",
         arrivalTime: "2026-04-15T07:48:00+09:00",
+        segments: demoSegments,
       } satisfies RouteOption,
     ]);
 

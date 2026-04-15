@@ -8,5 +8,6 @@ export function normalizeGoogleRoute(fixture: GoogleRouteFixture): RouteOption[]
     durationMinutes: route.durationMinutes,
     departureTime: route.departureTime,
     arrivalTime: route.arrivalTime,
+    segments: route.segments,
   }));
 }
