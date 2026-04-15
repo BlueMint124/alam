@@ -1,0 +1,27 @@
+{
+  "id": "demo-seoul-transfer",
+  "name": "Seoul Transfer Demo",
+  "description": "Deterministic replay of a Seoul Station transfer sequence for simulation mode.",
+  "events": [
+    {
+      "stopIndex": 1,
+      "segmentId": "line-4-inbound",
+      "timestamp": "2026-04-15T08:12:00+09:00"
+    },
+    {
+      "stopIndex": 2,
+      "segmentId": "line-4-inbound",
+      "timestamp": "2026-04-15T08:15:00+09:00"
+    },
+    {
+      "stopIndex": 3,
+      "segmentId": "line-4-inbound",
+      "timestamp": "2026-04-15T08:18:00+09:00"
+    },
+    {
+      "stopIndex": 4,
+      "segmentId": "line-4-inbound",
+      "timestamp": "2026-04-15T08:21:00+09:00"
+    }
+  ]
+}
