@@ -8,9 +8,9 @@ export function App() {
         <header className="app-bar">
           <h1>ArriveHae</h1>
         </header>
-        <div className="app-main">
+        <main className="app-main">
           <HomeScreen />
-        </div>
+        </main>
       </div>
     </div>
   );

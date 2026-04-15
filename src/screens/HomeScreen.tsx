@@ -17,7 +17,7 @@ export function HomeScreen() {
       const nextRoutes = await searchTransitRoutes({ from, to });
       setRoutes(nextRoutes);
     } catch {
-      // Route error handling will be added later.
+      setRoutes([]);
     } finally {
       setIsSearching(false);
     }

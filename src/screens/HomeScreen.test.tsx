@@ -48,13 +48,20 @@ describe("HomeScreen", () => {
     });
   });
 
-  it("clears searching state when route search fails", async () => {
+  it("clears stale routes when a later search fails", async () => {
+    let resolveSearch: (routes: RouteOption[]) => void = () => undefined;
     let rejectSearch: (error: Error) => void = () => undefined;
-    const searchPromise = new Promise<RouteOption[]>((_resolve, reject) => {
+
+    const firstSearch = new Promise<RouteOption[]>((resolve) => {
+      resolveSearch = resolve;
+    });
+    const secondSearch = new Promise<RouteOption[]>((_resolve, reject) => {
       rejectSearch = reject;
     });
 
-    vi.mocked(searchTransitRoutes).mockImplementationOnce(() => searchPromise);
+    vi.mocked(searchTransitRoutes)
+      .mockImplementationOnce(() => firstSearch)
+      .mockImplementationOnce(() => secondSearch);
 
     render(<HomeScreen />);
 
@@ -66,6 +73,20 @@ describe("HomeScreen", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
 
+    resolveSearch([
+      {
+        provider: "google",
+        providerRouteId: "google-route-1",
+        summary: "Myeongdong Station to Seoul Station",
+        durationMinutes: 18,
+        departureTime: "2026-04-15T07:30:00+09:00",
+        arrivalTime: "2026-04-15T07:48:00+09:00",
+      } satisfies RouteOption,
+    ]);
+
+    expect(await screen.findByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
     expect(screen.getByText("Searching routes...")).toBeInTheDocument();
 
     rejectSearch(new Error("Route search failed"));
@@ -73,5 +94,7 @@ describe("HomeScreen", () => {
     await waitFor(() => {
       expect(screen.queryByText("Searching routes...")).not.toBeInTheDocument();
     });
+    expect(screen.queryByText("Myeongdong Station to Seoul Station")).not.toBeInTheDocument();
+    expect(screen.getByText("No routes yet.")).toBeInTheDocument();
   });
 });
