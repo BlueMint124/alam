@@ -12,13 +12,19 @@ export function HomeScreen() {
 
   const handleSearch = async () => {
     setIsSearching(true);
-    const nextRoutes = await searchTransitRoutes({ from, to });
-    setRoutes(nextRoutes);
-    setIsSearching(false);
+
+    try {
+      const nextRoutes = await searchTransitRoutes({ from, to });
+      setRoutes(nextRoutes);
+    } catch {
+      // Route error handling will be added later.
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   return (
-    <main>
+    <section>
       <h2>Find your next route</h2>
       <RouteSearchForm
         from={from}
@@ -29,6 +35,6 @@ export function HomeScreen() {
         onSubmit={handleSearch}
       />
       {isSearching ? <p>Searching routes...</p> : <ResultsScreen routes={routes} />}
-    </main>
+    </section>
   );
 }
