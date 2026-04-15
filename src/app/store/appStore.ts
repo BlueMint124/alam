@@ -33,7 +33,6 @@ export function selectRoute(routeId: string) {
   setAppStoreState({
     ...appStoreState,
     selectedRouteId: routeId,
-    boardingRouteId: appStoreState.boardingRouteId === routeId ? routeId : null,
   });
 }
 

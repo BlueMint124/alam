@@ -1,4 +1,5 @@
 import React from "react";
+import { resetAppStore } from "../app/store/appStore";
 import { searchTransitRoutes } from "../features/routes/api/searchTransitRoutes";
 import type { RouteOption } from "../features/routes/types";
 import { RouteSearchForm } from "../features/routes/components/RouteSearchForm";
@@ -12,6 +13,7 @@ export function HomeScreen() {
 
   const handleSearch = async () => {
     setIsSearching(true);
+    resetAppStore();
 
     try {
       const nextRoutes = await searchTransitRoutes({ from, to });

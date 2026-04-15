@@ -1,6 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { resetAppStore } from "../app/store/appStore";
 import type { RouteOption } from "../features/routes/types";
 
 vi.mock("../features/routes/api/searchTransitRoutes", () => ({
@@ -27,6 +28,10 @@ const demoSegments: RouteOption["segments"] = [
 ];
 
 describe("HomeScreen", () => {
+  beforeEach(() => {
+    resetAppStore();
+  });
+
   it("renders resolved routes after searching", async () => {
     let resolveSearch: (routes: RouteOption[]) => void = () => undefined;
     const searchPromise = new Promise<RouteOption[]>((resolve) => {
@@ -114,5 +119,55 @@ describe("HomeScreen", () => {
     });
     expect(screen.queryByText("Myeongdong Station to Seoul Station")).not.toBeInTheDocument();
     expect(screen.getByText("No routes yet.")).toBeInTheDocument();
+  });
+
+  it("requires reselecting a route after a new successful search", async () => {
+    vi.mocked(searchTransitRoutes)
+      .mockResolvedValueOnce([
+        {
+          provider: "google",
+          providerRouteId: "google-route-1",
+          summary: "Myeongdong Station to Seoul Station",
+          durationMinutes: 18,
+          departureTime: "2026-04-15T07:30:00+09:00",
+          arrivalTime: "2026-04-15T07:48:00+09:00",
+          segments: demoSegments,
+        } satisfies RouteOption,
+      ])
+      .mockResolvedValueOnce([
+        {
+          provider: "google",
+          providerRouteId: "google-route-1",
+          summary: "Myeongdong Station to Seoul Station",
+          durationMinutes: 18,
+          departureTime: "2026-04-15T07:30:00+09:00",
+          arrivalTime: "2026-04-15T07:48:00+09:00",
+          segments: demoSegments,
+        } satisfies RouteOption,
+      ]);
+
+    render(<HomeScreen />);
+
+    fireEvent.change(screen.getByLabelText("From"), {
+      target: { value: "Myeongdong Station" },
+    });
+    fireEvent.change(screen.getByLabelText("To"), {
+      target: { value: "Seoul Station" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
+    expect(await screen.findByRole("button", { name: "View details for Myeongdong Station to Seoul Station" })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "View details for Myeongdong Station to Seoul Station" }));
+    fireEvent.click(screen.getByRole("button", { name: "Boarding Start" }));
+    expect(screen.getByText("Boarding started for this route.")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Select a route to view details.")).toBeInTheDocument();
+    });
+    expect(screen.queryByText("Boarding started for this route.")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "View details for Myeongdong Station to Seoul Station" })).toBeInTheDocument();
   });
 });
