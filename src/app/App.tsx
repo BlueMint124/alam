@@ -1,5 +1,6 @@
 import React from "react";
 import { HomeScreen } from "../screens/HomeScreen";
+import { SettingsScreen } from "../screens/SettingsScreen";
 
 export function App() {
   return (
@@ -10,6 +11,7 @@ export function App() {
         </header>
         <main className="app-main">
           <HomeScreen />
+          <SettingsScreen />
         </main>
       </div>
     </div>
