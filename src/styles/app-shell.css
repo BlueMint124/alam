@@ -6,50 +6,220 @@ body,
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at top, rgba(41, 98, 255, 0.22), transparent 42%),
-    linear-gradient(180deg, #050913 0%, #0a1120 100%);
+  background: var(--color-bg);
   color: var(--color-text);
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-body);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  isolation: isolate;
+  overflow-x: hidden;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 18% 12%, rgba(165, 149, 253, 0.28), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(125, 231, 197, 0.16), transparent 24%),
+    radial-gradient(circle at 50% 104%, rgba(143, 199, 247, 0.12), transparent 30%);
+  filter: blur(16px);
+  transform: scale(1.05);
+}
+
+body::after {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06), transparent 42%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 20%, rgba(6, 11, 20, 0.16) 100%);
+  opacity: 0.75;
 }
 
 * {
   box-sizing: border-box;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 .app-stage {
-  min-height: 100vh;
-  padding: 24px;
+  min-height: 100dvh;
+  padding: clamp(16px, 3vw, 32px);
   display: grid;
   place-items: center;
+  position: relative;
 }
 
 .app-shell {
-  width: min(100%, 420px);
-  min-height: min(100vh - 48px, 900px);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  width: min(100%, var(--shell-max-width));
+  min-height: calc(100dvh - (clamp(16px, 3vw, 32px) * 2));
+  max-height: 960px;
+  background:
+    linear-gradient(180deg, rgba(21, 30, 49, 0.92) 0%, rgba(13, 20, 34, 0.96) 100%),
+    var(--color-surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-shell);
   overflow: hidden;
   box-shadow: var(--shadow-shell);
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(30px) saturate(140%);
+  -webkit-backdrop-filter: blur(30px) saturate(140%);
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+.app-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(165, 149, 253, 0.09), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 28%);
+  pointer-events: none;
 }
 
 .app-bar {
-  padding: 20px 24px 18px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  border-bottom: 1px solid var(--color-border);
-  background: linear-gradient(180deg, var(--color-surface-elevated), transparent);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px 20px;
+  background: linear-gradient(180deg, rgba(25, 34, 54, 0.98) 0%, rgba(16, 24, 39, 0.86) 100%);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.03);
+  z-index: 1;
+}
+
+.app-bar__brand {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.app-bar__eyebrow {
+  font: 600 0.72rem/1 var(--font-display);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(151, 166, 191, 0.88);
+}
+
+.app-bar__title {
+  margin: 0;
+  font: 700 clamp(1.45rem, 4.5vw, 1.75rem)/1 var(--font-display);
+  letter-spacing: -0.05em;
+  color: var(--color-text);
+}
+
+.app-bar__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, rgba(165, 149, 253, 0.18), rgba(125, 231, 197, 0.14));
+  border: 1px solid rgba(165, 149, 253, 0.18);
+  color: var(--color-text);
+  font: 600 0.8rem/1 var(--font-display);
+  letter-spacing: 0.08em;
+  box-shadow: var(--shadow-panel);
 }
 
 .app-main {
   flex: 1;
-  padding: 24px;
+  min-height: 0;
+  padding: var(--shell-padding-tight);
+  color: var(--color-text);
+  position: relative;
+  z-index: 1;
+  overflow: auto;
+  scrollbar-color: rgba(151, 166, 191, 0.35) transparent;
+}
+
+.app-main::-webkit-scrollbar {
+  width: 10px;
+}
+
+.app-main::-webkit-scrollbar-thumb {
+  background: rgba(151, 166, 191, 0.24);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.app-tabBar {
+  margin: 0 var(--shell-padding-tight) var(--shell-padding-tight);
+  padding: 8px;
   display: grid;
-  place-items: center;
-  color: var(--color-muted);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  border-radius: calc(var(--radius-shell) - 14px);
+  background: linear-gradient(180deg, rgba(21, 30, 49, 0.94) 0%, rgba(13, 20, 34, 0.96) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow-tabbar);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  position: relative;
+  z-index: 2;
+}
+
+.app-tabBar__link {
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  color: rgba(151, 166, 191, 0.82);
+  background: transparent;
+  transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+  position: relative;
+}
+
+.app-tabBar__link:hover {
+  transform: translateY(-1px);
+  color: var(--color-text);
+}
+
+.app-tabBar__link.is-active,
+.app-tabBar__link[aria-current="page"] {
+  color: var(--color-text);
+  background: linear-gradient(135deg, rgba(165, 149, 253, 0.24), rgba(125, 231, 197, 0.16));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 10px 22px rgba(5, 10, 20, 0.26);
+}
+
+.app-tabBar__label {
+  font: 600 0.92rem/1 var(--font-display);
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 480px) {
+  .app-stage {
+    padding: 0;
+  }
+
+  .app-shell {
+    width: 100%;
+    min-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .app-bar {
+    padding-inline: 18px;
+  }
+
+  .app-main {
+    padding: 16px;
+  }
+
+  .app-tabBar {
+    margin: 0 16px 16px;
+  }
 }
