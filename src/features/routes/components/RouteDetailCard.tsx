@@ -1,5 +1,7 @@
 import React from "react";
 import type { RouteOption, RouteSegment } from "../types";
+import { LocalStorageGateway } from "../../storage/LocalStorageGateway";
+import { toStoredRoute } from "../../storage/StorageGateway";
 
 type RouteDetailCardProps = {
   route: RouteOption;
@@ -23,6 +25,24 @@ function renderSegmentMeta(segment: RouteSegment) {
 }
 
 export function RouteDetailCard({ route, boardingStarted = false, onBoardingStart }: RouteDetailCardProps) {
+  const [favoriteSaved, setFavoriteSaved] = React.useState(false);
+  const storageGateway = React.useMemo(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    return new LocalStorageGateway(window.localStorage);
+  }, []);
+
+  const handleFavoriteSave = () => {
+    if (!storageGateway) {
+      return;
+    }
+
+    storageGateway.saveFavorite(toStoredRoute(route));
+    setFavoriteSaved(true);
+  };
+
   return (
     <aside aria-label="Selected route details">
       <h3>{route.summary}</h3>
@@ -38,9 +58,15 @@ export function RouteDetailCard({ route, boardingStarted = false, onBoardingStar
           </li>
         ))}
       </ul>
-      <button type="button" onClick={onBoardingStart}>
-        Boarding Start
-      </button>
+      <div>
+        <button type="button" onClick={handleFavoriteSave}>
+          Save Favorite
+        </button>
+        <button type="button" onClick={onBoardingStart}>
+          Boarding Start
+        </button>
+      </div>
+      {favoriteSaved ? <p>Saved to favorites.</p> : null}
       {boardingStarted ? <p>Boarding started for this route.</p> : null}
     </aside>
   );

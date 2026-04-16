@@ -30,6 +30,7 @@ const demoSegments: RouteOption["segments"] = [
 describe("HomeScreen", () => {
   beforeEach(() => {
     resetAppStore();
+    window.localStorage.clear();
   });
 
   it("renders resolved routes after searching", async () => {
@@ -64,7 +65,11 @@ describe("HomeScreen", () => {
       } satisfies RouteOption,
     ]);
 
-    expect(await screen.findByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", {
+        name: "View details for Myeongdong Station to Seoul Station",
+      }),
+    ).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.queryByText("Searching routes...")).not.toBeInTheDocument();
     });
@@ -107,7 +112,11 @@ describe("HomeScreen", () => {
       } satisfies RouteOption,
     ]);
 
-    expect(await screen.findByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", {
+        name: "View details for Myeongdong Station to Seoul Station",
+      }),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
     expect(screen.getByText("Searching routes...")).toBeInTheDocument();
@@ -117,7 +126,11 @@ describe("HomeScreen", () => {
     await waitFor(() => {
       expect(screen.queryByText("Searching routes...")).not.toBeInTheDocument();
     });
-    expect(screen.queryByText("Myeongdong Station to Seoul Station")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: "View details for Myeongdong Station to Seoul Station",
+      }),
+    ).not.toBeInTheDocument();
     expect(screen.getByText("No routes yet.")).toBeInTheDocument();
   });
 
@@ -171,3 +184,4 @@ describe("HomeScreen", () => {
     expect(screen.getByRole("button", { name: "View details for Myeongdong Station to Seoul Station" })).toBeInTheDocument();
   });
 });
+
