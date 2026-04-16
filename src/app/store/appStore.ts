@@ -1,17 +1,31 @@
 import React from "react";
 
+export type TrackingViewState = {
+  remainingStops: number;
+  nextStopName: string;
+  simulationPaused: boolean;
+};
+
 type AppStoreState = {
   selectedRouteId: string | null;
   boardingRouteId: string | null;
+  trackingView: TrackingViewState;
 };
 
 type Listener = () => void;
 
 const listeners = new Set<Listener>();
 
+const initialTrackingView: TrackingViewState = {
+  remainingStops: 3,
+  nextStopName: "Konkuk Univ.",
+  simulationPaused: false,
+};
+
 const initialState: AppStoreState = {
   selectedRouteId: null,
   boardingRouteId: null,
+  trackingView: initialTrackingView,
 };
 
 let appStoreState: AppStoreState = initialState;
@@ -38,6 +52,7 @@ export function selectRoute(routeId: string) {
 
 export function clearSelectedRoute() {
   setAppStoreState({
+    ...appStoreState,
     selectedRouteId: null,
     boardingRouteId: null,
   });
@@ -45,8 +60,25 @@ export function clearSelectedRoute() {
 
 export function startBoarding(routeId: string) {
   setAppStoreState({
+    ...appStoreState,
     selectedRouteId: routeId,
     boardingRouteId: routeId,
+  });
+}
+
+export function setTrackingView(nextTrackingView: Partial<TrackingViewState>) {
+  setAppStoreState({
+    ...appStoreState,
+    trackingView: {
+      ...appStoreState.trackingView,
+      ...nextTrackingView,
+    },
+  });
+}
+
+export function toggleSimulationPaused() {
+  setTrackingView({
+    simulationPaused: !appStoreState.trackingView.simulationPaused,
   });
 }
 

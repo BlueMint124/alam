@@ -11,7 +11,7 @@ describe("appStore", () => {
 
     selectRoute("google-route-2");
 
-    expect(getAppStoreState()).toEqual({
+    expect(getAppStoreState()).toMatchObject({
       selectedRouteId: "google-route-2",
       boardingRouteId: "google-route-1",
     });
