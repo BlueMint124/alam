@@ -1,6 +1,6 @@
 import React from "react";
-import { HomeScreen } from "../screens/HomeScreen";
-import { SettingsScreen } from "../screens/SettingsScreen";
+import { Outlet } from "react-router-dom";
+import { AppTabBar } from "../features/ui/AppTabBar";
 
 export function App() {
   return (
@@ -10,9 +10,9 @@ export function App() {
           <h1>ArriveHae</h1>
         </header>
         <main className="app-main">
-          <HomeScreen />
-          <SettingsScreen />
+          <Outlet />
         </main>
+        <AppTabBar />
       </div>
     </div>
   );
