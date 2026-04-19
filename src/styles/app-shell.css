@@ -591,3 +591,111 @@ section[aria-label="Route results"] {
   display: grid;
   gap: 12px;
 }
+
+.screen--tracking {
+  align-content: start;
+}
+
+.tracking-hero-card {
+  display: grid;
+  gap: 10px;
+  padding: 24px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(125, 231, 197, 0.14), transparent 36%),
+    linear-gradient(165deg, rgba(165, 149, 253, 0.18), rgba(11, 18, 31, 0.96) 56%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 22px 38px rgba(4, 8, 18, 0.32);
+}
+
+.tracking-hero-card__kicker,
+.tracking-meta-card__label,
+.alert-modal__eyebrow {
+  margin: 0;
+  color: rgba(151, 166, 191, 0.84);
+  font: 600 0.74rem/1 var(--font-display);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.tracking-hero-card__title {
+  margin: 0;
+  font: 700 clamp(1.9rem, 8vw, 2.6rem)/1.04 var(--font-display);
+  letter-spacing: -0.06em;
+}
+
+.tracking-hero-card__subtitle,
+.alert-modal__description {
+  margin: 0;
+  color: var(--color-text);
+  font: 500 1rem/1.55 var(--font-body);
+}
+
+.tracking-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tracking-meta-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tracking-meta-card__value {
+  color: var(--color-text);
+  font: 700 0.98rem/1.35 var(--font-display);
+}
+
+.alert-scrim {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(4, 8, 18, 0.62);
+  backdrop-filter: blur(18px);
+  z-index: 20;
+}
+
+.alert-modal {
+  width: min(100%, 320px);
+  display: grid;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top, rgba(165, 149, 253, 0.18), transparent 42%),
+    linear-gradient(180deg, rgba(18, 27, 43, 0.98), rgba(9, 15, 28, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 28px 46px rgba(4, 8, 18, 0.42);
+}
+
+.alert-modal__icon {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: rgba(165, 149, 253, 0.16);
+  color: #ece7ff;
+  font: 700 0.92rem/1 var(--font-display);
+}
+
+.alert-modal__title {
+  margin: 0;
+  font: 700 1.35rem/1.2 var(--font-display);
+}
+
+.alert-modal__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--color-muted);
+  font: 600 0.86rem/1.4 var(--font-body);
+}

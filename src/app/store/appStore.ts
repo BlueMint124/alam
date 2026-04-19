@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 
 export type TrackingViewState = {
   remainingStops: number;
@@ -6,10 +6,20 @@ export type TrackingViewState = {
   simulationPaused: boolean;
 };
 
+export type AlertOverlayState = {
+  isOpen: boolean;
+  title: string;
+  description: string;
+  routeLabel: string;
+  etaLabel: string;
+};
+
 type AppStoreState = {
   selectedRouteId: string | null;
   boardingRouteId: string | null;
   trackingView: TrackingViewState;
+  alertOverlay: AlertOverlayState;
+  alertQueue: AlertOverlayState[];
 };
 
 type Listener = () => void;
@@ -22,13 +32,30 @@ const initialTrackingView: TrackingViewState = {
   simulationPaused: false,
 };
 
-const initialState: AppStoreState = {
-  selectedRouteId: null,
-  boardingRouteId: null,
-  trackingView: initialTrackingView,
+const initialAlertOverlay: AlertOverlayState = {
+  isOpen: false,
+  title: "",
+  description: "",
+  routeLabel: "",
+  etaLabel: "",
 };
 
-let appStoreState: AppStoreState = initialState;
+function createInitialState(): AppStoreState {
+  return {
+    selectedRouteId: null,
+    boardingRouteId: null,
+    trackingView: {
+      ...initialTrackingView,
+    },
+    alertOverlay: {
+      ...initialAlertOverlay,
+    },
+    alertQueue: [],
+  };
+}
+
+const initialState = createInitialState();
+let appStoreState: AppStoreState = createInitialState();
 
 function emitChange() {
   listeners.forEach((listener) => listener());
@@ -76,6 +103,50 @@ export function setTrackingView(nextTrackingView: Partial<TrackingViewState>) {
   });
 }
 
+export function setAlertOverlay(nextOverlay: Partial<AlertOverlayState>) {
+  setAppStoreState({
+    ...appStoreState,
+    alertOverlay: {
+      ...appStoreState.alertOverlay,
+      ...nextOverlay,
+    },
+  });
+}
+
+export function setAlertQueue(queue: AlertOverlayState[]) {
+  const nextQueue = queue.map((item) => ({ ...item }));
+
+  setAppStoreState({
+    ...appStoreState,
+    alertQueue: nextQueue,
+    alertOverlay: nextQueue[0] ?? { ...initialAlertOverlay },
+  });
+}
+
+export function advanceAlertQueue() {
+  if (appStoreState.alertQueue.length <= 1) {
+    setAppStoreState({
+      ...appStoreState,
+      alertQueue: [],
+      alertOverlay: {
+        ...initialAlertOverlay,
+      },
+    });
+
+    return;
+  }
+
+  const nextQueue = appStoreState.alertQueue.slice(1);
+
+  setAppStoreState({
+    ...appStoreState,
+    alertQueue: nextQueue,
+    alertOverlay: {
+      ...nextQueue[0],
+    },
+  });
+}
+
 export function toggleSimulationPaused() {
   setTrackingView({
     simulationPaused: !appStoreState.trackingView.simulationPaused,
@@ -83,7 +154,7 @@ export function toggleSimulationPaused() {
 }
 
 export function resetAppStore() {
-  setAppStoreState(initialState);
+  setAppStoreState(createInitialState());
 }
 
 function subscribe(listener: Listener) {
