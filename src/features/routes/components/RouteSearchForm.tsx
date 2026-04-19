@@ -19,31 +19,44 @@ export function RouteSearchForm({
 }: RouteSearchFormProps) {
   return (
     <form
+      className="search-card"
       onSubmit={(event) => {
         event.preventDefault();
         onSubmit();
       }}
     >
-      <label htmlFor="route-from">From</label>
-      <input
-        id="route-from"
-        name="from"
-        type="text"
-        value={from}
-        onChange={(event) => onFromChange(event.target.value)}
-      />
+      <div className="search-card__fieldGroup">
+        <label className="field-label" htmlFor="route-from">
+          출발지
+        </label>
+        <input
+          id="route-from"
+          className="search-input"
+          name="from"
+          type="text"
+          placeholder="예: 명동역"
+          value={from}
+          onChange={(event) => onFromChange(event.target.value)}
+        />
+      </div>
 
-      <label htmlFor="route-to">To</label>
-      <input
-        id="route-to"
-        name="to"
-        type="text"
-        value={to}
-        onChange={(event) => onToChange(event.target.value)}
-      />
+      <div className="search-card__fieldGroup">
+        <label className="field-label" htmlFor="route-to">
+          도착지
+        </label>
+        <input
+          id="route-to"
+          className="search-input"
+          name="to"
+          type="text"
+          placeholder="예: 서울역"
+          value={to}
+          onChange={(event) => onToChange(event.target.value)}
+        />
+      </div>
 
-      <button type="submit" disabled={isSearching}>
-        Find Routes
+      <button className="primary-button" type="submit" disabled={isSearching}>
+        {isSearching ? "경로를 찾는 중" : "길찾기"}
       </button>
     </form>
   );

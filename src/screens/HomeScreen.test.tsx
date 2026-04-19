@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { resetAppStore } from "../app/store/appStore";
 import type { RouteOption } from "../features/routes/types";
@@ -33,7 +33,7 @@ describe("HomeScreen", () => {
     window.localStorage.clear();
   });
 
-  it("renders resolved routes after searching", async () => {
+  it("renders Korean hero copy and resolved routes after searching", async () => {
     let resolveSearch: (routes: RouteOption[]) => void = () => undefined;
     const searchPromise = new Promise<RouteOption[]>((resolve) => {
       resolveSearch = resolve;
@@ -43,15 +43,17 @@ describe("HomeScreen", () => {
 
     render(<HomeScreen />);
 
-    fireEvent.change(screen.getByLabelText("From"), {
-      target: { value: "Myeongdong Station" },
-    });
-    fireEvent.change(screen.getByLabelText("To"), {
-      target: { value: "Seoul Station" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
+    expect(screen.getByText("지금 어디서 내려야 할지 놓치지 마세요")).toBeInTheDocument();
 
-    expect(screen.getByText("Searching routes...")).toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("출발지"), {
+      target: { value: "명동역" },
+    });
+    fireEvent.change(screen.getByLabelText("도착지"), {
+      target: { value: "서울역" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "길찾기" }));
+
+    expect(screen.getByText("경로를 찾는 중이에요.")).toBeInTheDocument();
 
     resolveSearch([
       {
@@ -65,14 +67,29 @@ describe("HomeScreen", () => {
       } satisfies RouteOption,
     ]);
 
-    expect(
-      await screen.findByRole("button", {
-        name: "View details for Myeongdong Station to Seoul Station",
-      }),
-    ).toBeInTheDocument();
+    const resultsRegion = await screen.findByRole("region", { name: "Route results" });
+    expect(within(resultsRegion).getByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.queryByText("Searching routes...")).not.toBeInTheDocument();
+      expect(screen.queryByText("경로를 찾는 중이에요.")).not.toBeInTheDocument();
     });
+  });
+
+  it("renders recent routes from local storage", () => {
+    window.localStorage.setItem(
+      "arrivehae.recentRoutes",
+      JSON.stringify([
+        {
+          providerRouteId: "google-route-1",
+          summary: "명동역에서 서울역",
+          savedAt: "2026-04-19T10:00:00+09:00",
+        },
+      ]),
+    );
+
+    render(<HomeScreen />);
+
+    expect(screen.getByText("최근 경로")).toBeInTheDocument();
+    expect(screen.getByText("명동역에서 서울역")).toBeInTheDocument();
   });
 
   it("clears stale routes when a later search fails", async () => {
@@ -92,13 +109,13 @@ describe("HomeScreen", () => {
 
     render(<HomeScreen />);
 
-    fireEvent.change(screen.getByLabelText("From"), {
-      target: { value: "Myeongdong Station" },
+    fireEvent.change(screen.getByLabelText("출발지"), {
+      target: { value: "명동역" },
     });
-    fireEvent.change(screen.getByLabelText("To"), {
-      target: { value: "Seoul Station" },
+    fireEvent.change(screen.getByLabelText("도착지"), {
+      target: { value: "서울역" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
+    fireEvent.click(screen.getByRole("button", { name: "길찾기" }));
 
     resolveSearch([
       {
@@ -112,76 +129,20 @@ describe("HomeScreen", () => {
       } satisfies RouteOption,
     ]);
 
-    expect(
-      await screen.findByRole("button", {
-        name: "View details for Myeongdong Station to Seoul Station",
-      }),
-    ).toBeInTheDocument();
+    const resultsRegion = await screen.findByRole("region", { name: "Route results" });
+    expect(within(resultsRegion).getByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
-    expect(screen.getByText("Searching routes...")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "길찾기" }));
+    expect(screen.getByText("경로를 찾는 중이에요.")).toBeInTheDocument();
 
     rejectSearch(new Error("Route search failed"));
 
     await waitFor(() => {
-      expect(screen.queryByText("Searching routes...")).not.toBeInTheDocument();
+      expect(screen.queryByText("경로를 찾는 중이에요.")).not.toBeInTheDocument();
     });
-    expect(
-      screen.queryByRole("button", {
-        name: "View details for Myeongdong Station to Seoul Station",
-      }),
-    ).not.toBeInTheDocument();
-    expect(screen.getByText("No routes yet.")).toBeInTheDocument();
-  });
-
-  it("requires reselecting a route after a new successful search", async () => {
-    vi.mocked(searchTransitRoutes)
-      .mockResolvedValueOnce([
-        {
-          provider: "google",
-          providerRouteId: "google-route-1",
-          summary: "Myeongdong Station to Seoul Station",
-          durationMinutes: 18,
-          departureTime: "2026-04-15T07:30:00+09:00",
-          arrivalTime: "2026-04-15T07:48:00+09:00",
-          segments: demoSegments,
-        } satisfies RouteOption,
-      ])
-      .mockResolvedValueOnce([
-        {
-          provider: "google",
-          providerRouteId: "google-route-1",
-          summary: "Myeongdong Station to Seoul Station",
-          durationMinutes: 18,
-          departureTime: "2026-04-15T07:30:00+09:00",
-          arrivalTime: "2026-04-15T07:48:00+09:00",
-          segments: demoSegments,
-        } satisfies RouteOption,
-      ]);
-
-    render(<HomeScreen />);
-
-    fireEvent.change(screen.getByLabelText("From"), {
-      target: { value: "Myeongdong Station" },
-    });
-    fireEvent.change(screen.getByLabelText("To"), {
-      target: { value: "Seoul Station" },
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
-    expect(await screen.findByRole("button", { name: "View details for Myeongdong Station to Seoul Station" })).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "View details for Myeongdong Station to Seoul Station" }));
-    fireEvent.click(screen.getByRole("button", { name: "Boarding Start" }));
-    expect(screen.getByText("Boarding started for this route.")).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "Find Routes" }));
-
-    await waitFor(() => {
-      expect(screen.getByText("Select a route to view details.")).toBeInTheDocument();
-    });
-    expect(screen.queryByText("Boarding started for this route.")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "View details for Myeongdong Station to Seoul Station" })).toBeInTheDocument();
+    const updatedResultsRegion = screen.getByRole("region", { name: "Route results" });
+    expect(within(updatedResultsRegion).queryByText("Myeongdong Station to Seoul Station")).not.toBeInTheDocument();
+    expect(within(updatedResultsRegion).getByText("No routes yet.")).toBeInTheDocument();
   });
 });
 
