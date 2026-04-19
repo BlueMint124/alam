@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { resetAppStore } from "../app/store/appStore";
@@ -54,18 +54,23 @@ describe("ResultsScreen", () => {
     resetAppStore();
   });
 
-  it("lets a user select a route and start boarding from the detail card", () => {
+  it("shows Korean recommendation cards and detail actions for a selected route", () => {
     render(<ResultsScreen routes={routes} />);
 
-    expect(screen.getByText("Select a route to view details.")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "경로 추천" })).toBeInTheDocument();
+    expect(screen.getByText("추천 경로")).toBeInTheDocument();
+    expect(screen.getByText("상세를 보려면 경로를 선택하세요.")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "View details for Myeongdong Station to Seoul Station" }));
+    fireEvent.click(screen.getAllByRole("button", { name: "이 경로 자세히 보기" })[0]);
 
     expect(screen.getByText("Subway Line 4 toward Danggogae")).toBeInTheDocument();
-    expect(screen.getByText("4 stops")).toBeInTheDocument();
+    expect(screen.getByText("4개 역 이동")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "선택된 경로" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "즐겨찾기 저장" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "탑승 시작" })).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Boarding Start" }));
+    fireEvent.click(screen.getByRole("button", { name: "탑승 시작" }));
 
-    expect(screen.getByText("Boarding started for this route.")).toBeInTheDocument();
+    expect(screen.getByText("이 경로로 탑승을 시작했어요.")).toBeInTheDocument();
   });
 });

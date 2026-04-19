@@ -1,4 +1,4 @@
-import React from "react";
+ï»¿import React from "react";
 
 type RouteSearchFormProps = {
   from: string;
@@ -27,14 +27,14 @@ export function RouteSearchForm({
     >
       <div className="search-card__fieldGroup">
         <label className="field-label" htmlFor="route-from">
-          Ãâ¹ßÁö
+          ì¶œë°œì§€
         </label>
         <input
           id="route-from"
           className="search-input"
           name="from"
           type="text"
-          placeholder="¿¹: ¸íµ¿¿ª"
+          placeholder="ì˜ˆ: ëª…ë™ì—­"
           value={from}
           onChange={(event) => onFromChange(event.target.value)}
         />
@@ -42,21 +42,21 @@ export function RouteSearchForm({
 
       <div className="search-card__fieldGroup">
         <label className="field-label" htmlFor="route-to">
-          µµÂøÁö
+          ë„ì°©ì§€
         </label>
         <input
           id="route-to"
           className="search-input"
           name="to"
           type="text"
-          placeholder="¿¹: ¼­¿ï¿ª"
+          placeholder="ì˜ˆ: ì„œìš¸ì—­"
           value={to}
           onChange={(event) => onToChange(event.target.value)}
         />
       </div>
 
       <button className="primary-button" type="submit" disabled={isSearching}>
-        {isSearching ? "°æ·Î¸¦ Ã£´Â Áß" : "±æÃ£±â"}
+        {isSearching ? "ê²½ë¡œë¥¼ ì°¾ëŠ” ì¤‘" : "ê¸¸ì°¾ê¸°"}
       </button>
     </form>
   );

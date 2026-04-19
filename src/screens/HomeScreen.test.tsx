@@ -1,4 +1,4 @@
-import React from "react";
+ï»¿import React from "react";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { resetAppStore } from "../app/store/appStore";
@@ -43,17 +43,17 @@ describe("HomeScreen", () => {
 
     render(<HomeScreen />);
 
-    expect(screen.getByText("Áö±İ ¾îµğ¼­ ³»·Á¾ß ÇÒÁö ³õÄ¡Áö ¸¶¼¼¿ä")).toBeInTheDocument();
+    expect(screen.getByText("ì§€ê¸ˆ ì–´ë””ì„œ ë‚´ë ¤ì•¼ í• ì§€ ë†“ì¹˜ì§€ ë§ˆì„¸ìš”")).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("Ãâ¹ßÁö"), {
-      target: { value: "¸íµ¿¿ª" },
+    fireEvent.change(screen.getByLabelText("ì¶œë°œì§€"), {
+      target: { value: "ëª…ë™ì—­" },
     });
-    fireEvent.change(screen.getByLabelText("µµÂøÁö"), {
-      target: { value: "¼­¿ï¿ª" },
+    fireEvent.change(screen.getByLabelText("ë„ì°©ì§€"), {
+      target: { value: "ì„œìš¸ì—­" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "±æÃ£±â" }));
+    fireEvent.click(screen.getByRole("button", { name: "ê¸¸ì°¾ê¸°" }));
 
-    expect(screen.getByText("°æ·Î¸¦ Ã£´Â ÁßÀÌ¿¡¿ä.")).toBeInTheDocument();
+    expect(screen.getByText("ê²½ë¡œë¥¼ ì°¾ëŠ” ì¤‘ì´ì—ìš”.")).toBeInTheDocument();
 
     resolveSearch([
       {
@@ -67,10 +67,10 @@ describe("HomeScreen", () => {
       } satisfies RouteOption,
     ]);
 
-    const resultsRegion = await screen.findByRole("region", { name: "Route results" });
+    const resultsRegion = await screen.findByRole("region", { name: "ê²½ë¡œ ì¶”ì²œ" });
     expect(within(resultsRegion).getByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.queryByText("°æ·Î¸¦ Ã£´Â ÁßÀÌ¿¡¿ä.")).not.toBeInTheDocument();
+      expect(screen.queryByText("ê²½ë¡œë¥¼ ì°¾ëŠ” ì¤‘ì´ì—ìš”.")).not.toBeInTheDocument();
     });
   });
 
@@ -80,7 +80,7 @@ describe("HomeScreen", () => {
       JSON.stringify([
         {
           providerRouteId: "google-route-1",
-          summary: "¸íµ¿¿ª¿¡¼­ ¼­¿ï¿ª",
+          summary: "ëª…ë™ì—­ì—ì„œ ì„œìš¸ì—­",
           savedAt: "2026-04-19T10:00:00+09:00",
         },
       ]),
@@ -88,8 +88,8 @@ describe("HomeScreen", () => {
 
     render(<HomeScreen />);
 
-    expect(screen.getByText("ÃÖ±Ù °æ·Î")).toBeInTheDocument();
-    expect(screen.getByText("¸íµ¿¿ª¿¡¼­ ¼­¿ï¿ª")).toBeInTheDocument();
+    expect(screen.getByText("ìµœê·¼ ê²½ë¡œ")).toBeInTheDocument();
+    expect(screen.getByText("ëª…ë™ì—­ì—ì„œ ì„œìš¸ì—­")).toBeInTheDocument();
   });
 
   it("clears stale routes when a later search fails", async () => {
@@ -109,13 +109,13 @@ describe("HomeScreen", () => {
 
     render(<HomeScreen />);
 
-    fireEvent.change(screen.getByLabelText("Ãâ¹ßÁö"), {
-      target: { value: "¸íµ¿¿ª" },
+    fireEvent.change(screen.getByLabelText("ì¶œë°œì§€"), {
+      target: { value: "ëª…ë™ì—­" },
     });
-    fireEvent.change(screen.getByLabelText("µµÂøÁö"), {
-      target: { value: "¼­¿ï¿ª" },
+    fireEvent.change(screen.getByLabelText("ë„ì°©ì§€"), {
+      target: { value: "ì„œìš¸ì—­" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "±æÃ£±â" }));
+    fireEvent.click(screen.getByRole("button", { name: "ê¸¸ì°¾ê¸°" }));
 
     resolveSearch([
       {
@@ -129,20 +129,19 @@ describe("HomeScreen", () => {
       } satisfies RouteOption,
     ]);
 
-    const resultsRegion = await screen.findByRole("region", { name: "Route results" });
+    const resultsRegion = await screen.findByRole("region", { name: "ê²½ë¡œ ì¶”ì²œ" });
     expect(within(resultsRegion).getByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "±æÃ£±â" }));
-    expect(screen.getByText("°æ·Î¸¦ Ã£´Â ÁßÀÌ¿¡¿ä.")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "ê¸¸ì°¾ê¸°" }));
+    expect(screen.getByText("ê²½ë¡œë¥¼ ì°¾ëŠ” ì¤‘ì´ì—ìš”.")).toBeInTheDocument();
 
     rejectSearch(new Error("Route search failed"));
 
     await waitFor(() => {
-      expect(screen.queryByText("°æ·Î¸¦ Ã£´Â ÁßÀÌ¿¡¿ä.")).not.toBeInTheDocument();
+      expect(screen.queryByText("ê²½ë¡œë¥¼ ì°¾ëŠ” ì¤‘ì´ì—ìš”.")).not.toBeInTheDocument();
     });
-    const updatedResultsRegion = screen.getByRole("region", { name: "Route results" });
+    const updatedResultsRegion = screen.getByRole("region", { name: "ê²½ë¡œ ì¶”ì²œ" });
     expect(within(updatedResultsRegion).queryByText("Myeongdong Station to Seoul Station")).not.toBeInTheDocument();
-    expect(within(updatedResultsRegion).getByText("No routes yet.")).toBeInTheDocument();
+    expect(within(updatedResultsRegion).getByText("ì•„ì§ ì¶”ì²œëœ ê²½ë¡œê°€ ì—†ì–´ìš”.")).toBeInTheDocument();
   });
 });
-

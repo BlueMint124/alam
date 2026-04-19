@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { clearSelectedRoute, selectRoute, startBoarding, useAppStore } from "../app/store/appStore";
 import { RouteDetailCard } from "../features/routes/components/RouteDetailCard";
 import { RouteOptionCard } from "../features/routes/components/RouteOptionCard";
@@ -26,17 +26,23 @@ export function ResultsScreen({ routes }: ResultsScreenProps) {
   }, [routes, selectedRoute, selectedRouteId]);
 
   return (
-    <section aria-label="Route results">
-      <h2>Route results</h2>
-      {routes.length === 0 ? (
-        <p>No routes yet.</p>
-      ) : (
+    <section aria-label="경로 추천" className="results-screen">
+      <div className="section-headingRow results-screen__header">
         <div>
-          <div>
-            {routes.map((route) => (
+          <h2 className="section-heading">경로 추천</h2>
+          <p className="results-screen__meta">도착 전 알림에 가장 적합한 대중교통 경로를 골라보세요.</p>
+        </div>
+      </div>
+      {routes.length === 0 ? (
+        <p className="status-copy">아직 추천된 경로가 없어요.</p>
+      ) : (
+        <div className="results-layout">
+          <div className="results-stack">
+            {routes.map((route, index) => (
               <RouteOptionCard
                 key={route.providerRouteId}
                 route={route}
+                isRecommended={index === 0}
                 isSelected={route.providerRouteId === selectedRouteId}
                 onSelect={selectRoute}
               />
@@ -49,7 +55,9 @@ export function ResultsScreen({ routes }: ResultsScreenProps) {
               onBoardingStart={() => startBoarding(selectedRoute.providerRouteId)}
             />
           ) : (
-            <p>Select a route to view details.</p>
+            <aside aria-label="선택한 경로 상세" className="detail-card detail-card--empty">
+              <p className="detail-card__emptyCopy">상세를 보려면 경로를 선택하세요.</p>
+            </aside>
           )}
         </div>
       )}

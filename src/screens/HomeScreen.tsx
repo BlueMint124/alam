@@ -1,4 +1,4 @@
-import React from "react";
+ï»¿import React from "react";
 import { resetAppStore } from "../app/store/appStore";
 import { searchTransitRoutes } from "../features/routes/api/searchTransitRoutes";
 import type { RouteOption } from "../features/routes/types";
@@ -52,14 +52,14 @@ export function HomeScreen() {
   return (
     <section className="screen screen--home">
       <div className="hero-card">
-        <p className="hero-kicker">µµÂø ¾Ë¸²</p>
-        <h2 className="hero-title">Áö±İ ¾îµğ¼­ ³»·Á¾ß ÇÒÁö ³õÄ¡Áö ¸¶¼¼¿ä</h2>
-        <p className="hero-copy">´ëÁß±³Åë °æ·Î¸¦ ¼±ÅÃÇÏ¸é ÇÏÂ÷ Àü°ú È¯½Â Àü¿¡ ¾Ë¸²À» º¸³»µå·Á¿ä.</p>
+        <p className="hero-kicker">ë„ì°© ì•Œë¦¼</p>
+        <h2 className="hero-title">ì§€ê¸ˆ ì–´ë””ì„œ ë‚´ë ¤ì•¼ í• ì§€ ë†“ì¹˜ì§€ ë§ˆì„¸ìš”</h2>
+        <p className="hero-copy">ëŒ€ì¤‘êµí†µ ê²½ë¡œë¥¼ ì„ íƒí•˜ë©´ í•˜ì°¨ ì „ê³¼ í™˜ìŠ¹ ì „ì— ì•Œë¦¼ì„ ë³´ë‚´ë“œë ¤ìš”.</p>
       </div>
 
-      <div className="quick-destination-grid" aria-label="ºü¸¥ ¸ñÀûÁö">
-        <QuickDestinationCard label="Áı" meta="ÃÖ±Ù ÀúÀåµÊ" tone="lavender" onSelect={() => setTo("¿ì¸® Áı")} />
-        <QuickDestinationCard label="ÇĞ±³" meta="¿ÀÀü 9½Ã µµÂø" tone="mint" onSelect={() => setTo("ÇĞ±³")} />
+      <div className="quick-destination-grid" aria-label="ë¹ ë¥¸ ëª©ì ì§€">
+        <QuickDestinationCard label="ì§‘" meta="ìµœê·¼ ì €ì¥ë¨" tone="lavender" onSelect={() => setTo("ìš°ë¦¬ ì§‘")} />
+        <QuickDestinationCard label="í•™êµ" meta="ì˜¤ì „ 9ì‹œ ë„ì°©" tone="mint" onSelect={() => setTo("í•™êµ")} />
       </div>
 
       <RouteSearchForm
@@ -72,10 +72,10 @@ export function HomeScreen() {
       />
 
       {recentRoutes.length > 0 ? (
-        <section aria-label="ÃÖ±Ù °æ·Î" className="home-section">
+        <section aria-label="ìµœê·¼ ê²½ë¡œ" className="home-section">
           <div className="section-headingRow">
-            <h3 className="section-heading">ÃÖ±Ù °æ·Î</h3>
-            <span className="section-headingMeta">ÃÖ±Ù °Ë»ö ±â·Ï</span>
+            <h3 className="section-heading">ìµœê·¼ ê²½ë¡œ</h3>
+            <span className="section-headingMeta">ìµœê·¼ ê²€ìƒ‰ ê¸°ë¡</span>
           </div>
           <ul className="recent-route-list">
             {recentRoutes.map((route) => (
@@ -87,7 +87,7 @@ export function HomeScreen() {
         </section>
       ) : null}
 
-      {isSearching ? <p className="status-copy">°æ·Î¸¦ Ã£´Â ÁßÀÌ¿¡¿ä.</p> : <ResultsScreen routes={routes} />}
+      {isSearching ? <p className="status-copy">ê²½ë¡œë¥¼ ì°¾ëŠ” ì¤‘ì´ì—ìš”.</p> : <ResultsScreen routes={routes} />}
     </section>
   );
 }
