@@ -13,9 +13,9 @@ describe("router bootstrap", () => {
     render(<RouterProvider router={router} />);
 
     expect(await screen.findByRole("heading", { name: "ArriveHae" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Find your next route" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "지금 어디서 내려야 할지 놓치지 마세요" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "홈" })).toHaveAttribute("aria-current", "page");
-    expect(screen.queryByRole("heading", { name: "Settings" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "알림 설정" })).not.toBeInTheDocument();
   });
 
   it("renders nested routes inside the shared shell", async () => {
@@ -26,7 +26,7 @@ describe("router bootstrap", () => {
     render(<RouterProvider router={router} />);
 
     expect(await screen.findByRole("heading", { name: "ArriveHae" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /stops left/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /정거장 남았어요/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "알림" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "설정" })).not.toHaveAttribute("aria-current", "page");
   });
@@ -39,7 +39,7 @@ describe("router bootstrap", () => {
     render(<RouterProvider router={router} />);
 
     expect(await screen.findByRole("heading", { name: "ArriveHae" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Settings" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "알림 설정" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "설정" })).toHaveAttribute("aria-current", "page");
   });
 });

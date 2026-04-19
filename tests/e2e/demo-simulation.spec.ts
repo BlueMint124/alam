@@ -1,8 +1,9 @@
-import { test, expect } from "@playwright/test";
+﻿import { test, expect } from "@playwright/test";
 
-test("demo scenario reaches transfer alert and final alert", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("button", { name: "Load Demo Scenario" }).click();
-  await expect(page.getByText("Transfer alert")).toBeVisible();
-  await expect(page.getByText("Near-arrival alert")).toBeVisible();
+test("demo scenario shows the Korean transfer and final alert flow", async ({ page }) => {
+  await page.goto("/settings");
+  await page.getByRole("button", { name: "데모 시나리오 불러오기" }).click();
+  await expect(page.getByRole("dialog", { name: "곧 환승할 시간이에요" })).toBeVisible();
+  await page.getByRole("button", { name: "확인" }).click();
+  await expect(page.getByRole("dialog", { name: "곧 내릴 시간이에요" })).toBeVisible();
 });
