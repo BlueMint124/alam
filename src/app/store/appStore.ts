@@ -1,4 +1,13 @@
-﻿import React from "react";
+import React from "react";
+import type {
+  AlertPresentationState,
+  DemoPlaybackState,
+  HomePresentationState,
+  PlaybackMode,
+  PresentationState,
+  ResultsPresentationState,
+  TrackingPresentationState,
+} from "../../features/presentation/types";
 
 export type TrackingViewState = {
   remainingStops: number;
@@ -20,6 +29,8 @@ type AppStoreState = {
   trackingView: TrackingViewState;
   alertOverlay: AlertOverlayState;
   alertQueue: AlertOverlayState[];
+  presentation: PresentationState;
+  demoPlayback: DemoPlaybackState;
 };
 
 type Listener = () => void;
@@ -40,6 +51,22 @@ const initialAlertOverlay: AlertOverlayState = {
   etaLabel: "",
 };
 
+const initialPresentationState: PresentationState = {
+  home: "entered",
+  results: "list_revealed",
+  tracking: "live",
+  alert: "closing",
+};
+
+const initialDemoPlaybackState: DemoPlaybackState = {
+  mode: "idle",
+  currentEventIndex: 0,
+  totalEvents: 0,
+  transferThreshold: 3,
+  finalThreshold: 1,
+  transferEnabled: true,
+};
+
 function createInitialState(): AppStoreState {
   return {
     selectedRouteId: null,
@@ -51,6 +78,12 @@ function createInitialState(): AppStoreState {
       ...initialAlertOverlay,
     },
     alertQueue: [],
+    presentation: {
+      ...initialPresentationState,
+    },
+    demoPlayback: {
+      ...initialDemoPlaybackState,
+    },
   };
 }
 
@@ -143,6 +176,89 @@ export function advanceAlertQueue() {
     alertQueue: nextQueue,
     alertOverlay: {
       ...nextQueue[0],
+    },
+  });
+}
+
+export function configureDemoPlayback(
+  nextPlayback: Omit<DemoPlaybackState, "mode" | "currentEventIndex">,
+) {
+  setAppStoreState({
+    ...appStoreState,
+    demoPlayback: {
+      ...appStoreState.demoPlayback,
+      ...nextPlayback,
+      currentEventIndex: 0,
+    },
+  });
+}
+
+export function setPlaybackMode(mode: PlaybackMode) {
+  setAppStoreState({
+    ...appStoreState,
+    demoPlayback: {
+      ...appStoreState.demoPlayback,
+      mode,
+    },
+  });
+}
+
+export function setDemoPlaybackProgress(currentEventIndex: number) {
+  setAppStoreState({
+    ...appStoreState,
+    demoPlayback: {
+      ...appStoreState.demoPlayback,
+      currentEventIndex,
+    },
+  });
+}
+
+export function resetDemoPlayback(totalEvents = 0) {
+  setAppStoreState({
+    ...appStoreState,
+    demoPlayback: {
+      ...initialDemoPlaybackState,
+      totalEvents,
+    },
+  });
+}
+
+export function setHomePresentationState(home: HomePresentationState) {
+  setAppStoreState({
+    ...appStoreState,
+    presentation: {
+      ...appStoreState.presentation,
+      home,
+    },
+  });
+}
+
+export function setResultsPresentationState(results: ResultsPresentationState) {
+  setAppStoreState({
+    ...appStoreState,
+    presentation: {
+      ...appStoreState.presentation,
+      results,
+    },
+  });
+}
+
+export function setTrackingPresentationState(tracking: TrackingPresentationState) {
+  setAppStoreState({
+    ...appStoreState,
+    presentation: {
+      ...appStoreState.presentation,
+      tracking,
+    },
+  });
+}
+
+export function setAlertPresentationState(alert: AlertPresentationState) {
+  setAppStoreState({
+    ...appStoreState,
+    presentation: {
+      ...appStoreState.presentation,
+      alert,
     },
   });
 }
