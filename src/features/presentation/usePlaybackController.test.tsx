@@ -52,7 +52,7 @@ describe("usePlaybackController", () => {
     });
 
     expect(screen.getByText("mode:alert_open")).toBeInTheDocument();
-    expect(screen.getByText(/alert:transfer-alert/)).toBeInTheDocument();
+    expect(screen.getByText(/alert:곧 환승할 시간이에요/)).toBeInTheDocument();
 
     act(() => {
       screen.getByRole("button", { name: "confirm" }).click();

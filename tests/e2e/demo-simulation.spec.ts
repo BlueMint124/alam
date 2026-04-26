@@ -1,9 +1,17 @@
-﻿import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-test("demo scenario shows the Korean transfer and final alert flow", async ({ page }) => {
+test("semi-automatic demo flows from settings into tracking, transfer alert, and final alert", async ({
+  page,
+}) => {
   await page.goto("/settings");
-  await page.getByRole("button", { name: "데모 시나리오 불러오기" }).click();
-  await expect(page.getByRole("dialog", { name: "곧 환승할 시간이에요" })).toBeVisible();
+  await page.getByTestId("demo-start").click();
+
+  await expect(page).toHaveURL(/\/tracking$/);
+  await expect(page.getByTestId("tracking-screen")).toHaveAttribute(
+    "data-playback-mode",
+    "auto_playing",
+  );
+  await expect(page.getByTestId("alert-modal")).toHaveAttribute("data-state", "active");
   await page.getByRole("button", { name: "확인" }).click();
   await expect(page.getByRole("dialog", { name: "곧 내릴 시간이에요" })).toBeVisible();
 });

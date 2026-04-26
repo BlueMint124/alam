@@ -22,19 +22,19 @@ function toAlertOverlay(kind: AlertKind, transferThreshold: number): AlertOverla
   if (kind === "TRANSFER") {
     return {
       isOpen: true,
-      title: "transfer-alert",
-      description: `remaining-${transferThreshold}`,
-      routeLabel: "line-4",
-      etaLabel: "soon",
+      title: "곧 환승할 시간이에요",
+      description: `환승까지 ${transferThreshold}정거장 남았어요`,
+      routeLabel: "4호선 오이도행",
+      etaLabel: "곧 도착",
     };
   }
 
   return {
     isOpen: true,
-    title: "final-alert",
-    description: "remaining-1",
-    routeLabel: "seoul-station",
-    etaLabel: "soon",
+    title: "곧 내릴 시간이에요",
+    description: "서울역까지 1정거장 남았어요",
+    routeLabel: "서울역",
+    etaLabel: "곧 도착",
   };
 }
 

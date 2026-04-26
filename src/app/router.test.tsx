@@ -26,7 +26,11 @@ describe("router bootstrap", () => {
     render(<RouterProvider router={router} />);
 
     expect(await screen.findByRole("heading", { name: "ArriveHae" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /정거장 남았어요/i })).toBeInTheDocument();
+    expect(screen.getByTestId("tracking-screen")).toHaveAttribute(
+      "data-playback-mode",
+      "idle",
+    );
+    expect(screen.getByTestId("remaining-stops")).toHaveTextContent("3");
     expect(screen.getByRole("link", { name: "알림" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "설정" })).not.toHaveAttribute("aria-current", "page");
   });
