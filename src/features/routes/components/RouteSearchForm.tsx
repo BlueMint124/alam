@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 
 type RouteSearchFormProps = {
   from: string;
@@ -55,7 +55,12 @@ export function RouteSearchForm({
         />
       </div>
 
-      <button className="primary-button" type="submit" disabled={isSearching}>
+      <button
+        className="primary-button"
+        type="submit"
+        disabled={isSearching}
+        data-testid="search-submit"
+      >
         {isSearching ? "경로를 찾는 중" : "길찾기"}
       </button>
     </form>

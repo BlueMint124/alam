@@ -1,5 +1,11 @@
-﻿import React from "react";
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import React from "react";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { resetAppStore } from "../app/store/appStore";
 import type { RouteOption } from "../features/routes/types";
@@ -44,6 +50,10 @@ describe("HomeScreen", () => {
     render(<HomeScreen />);
 
     expect(screen.getByText("지금 어디서 내려야 할지 놓치지 마세요")).toBeInTheDocument();
+    expect(screen.getByTestId("home-screen")).toHaveAttribute(
+      "data-presentation",
+      "entered",
+    );
 
     fireEvent.change(screen.getByLabelText("출발지"), {
       target: { value: "명동역" },
@@ -51,9 +61,13 @@ describe("HomeScreen", () => {
     fireEvent.change(screen.getByLabelText("도착지"), {
       target: { value: "서울역" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "길찾기" }));
+    fireEvent.click(screen.getByTestId("search-submit"));
 
     expect(screen.getByText("경로를 찾는 중이에요.")).toBeInTheDocument();
+    expect(screen.getByTestId("home-screen")).toHaveAttribute(
+      "data-presentation",
+      "searching",
+    );
 
     resolveSearch([
       {
@@ -68,9 +82,15 @@ describe("HomeScreen", () => {
     ]);
 
     const resultsRegion = await screen.findByRole("region", { name: "경로 추천" });
-    expect(within(resultsRegion).getByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
+    expect(
+      within(resultsRegion).getByText("Myeongdong Station to Seoul Station"),
+    ).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.queryByText("경로를 찾는 중이에요.")).not.toBeInTheDocument();
+      expect(screen.getByTestId("home-screen")).toHaveAttribute(
+        "data-presentation",
+        "results_ready",
+      );
     });
   });
 
@@ -115,7 +135,7 @@ describe("HomeScreen", () => {
     fireEvent.change(screen.getByLabelText("도착지"), {
       target: { value: "서울역" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "길찾기" }));
+    fireEvent.click(screen.getByTestId("search-submit"));
 
     resolveSearch([
       {
@@ -130,9 +150,11 @@ describe("HomeScreen", () => {
     ]);
 
     const resultsRegion = await screen.findByRole("region", { name: "경로 추천" });
-    expect(within(resultsRegion).getByText("Myeongdong Station to Seoul Station")).toBeInTheDocument();
+    expect(
+      within(resultsRegion).getByText("Myeongdong Station to Seoul Station"),
+    ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "길찾기" }));
+    fireEvent.click(screen.getByTestId("search-submit"));
     expect(screen.getByText("경로를 찾는 중이에요.")).toBeInTheDocument();
 
     rejectSearch(new Error("Route search failed"));
@@ -141,7 +163,11 @@ describe("HomeScreen", () => {
       expect(screen.queryByText("경로를 찾는 중이에요.")).not.toBeInTheDocument();
     });
     const updatedResultsRegion = screen.getByRole("region", { name: "경로 추천" });
-    expect(within(updatedResultsRegion).queryByText("Myeongdong Station to Seoul Station")).not.toBeInTheDocument();
-    expect(within(updatedResultsRegion).getByText("아직 추천된 경로가 없어요.")).toBeInTheDocument();
+    expect(
+      within(updatedResultsRegion).queryByText("Myeongdong Station to Seoul Station"),
+    ).not.toBeInTheDocument();
+    expect(
+      within(updatedResultsRegion).getByText("아직 추천된 경로가 없어요."),
+    ).toBeInTheDocument();
   });
 });

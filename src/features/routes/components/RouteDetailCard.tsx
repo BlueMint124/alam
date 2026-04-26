@@ -1,10 +1,11 @@
-﻿import React from "react";
+import React from "react";
 import type { RouteOption, RouteSegment, RouteTransitSegment } from "../types";
 import { LocalStorageGateway } from "../../storage/LocalStorageGateway";
 import { toStoredRoute } from "../../storage/StorageGateway";
 
 type RouteDetailCardProps = {
   route: RouteOption;
+  isExpanded: boolean;
   boardingStarted?: boolean;
   onBoardingStart: () => void;
 };
@@ -40,7 +41,12 @@ function renderSegmentMeta(segment: RouteSegment) {
   );
 }
 
-export function RouteDetailCard({ route, boardingStarted = false, onBoardingStart }: RouteDetailCardProps) {
+export function RouteDetailCard({
+  route,
+  isExpanded,
+  boardingStarted = false,
+  onBoardingStart,
+}: RouteDetailCardProps) {
   const [favoriteSaved, setFavoriteSaved] = React.useState(false);
   const storageGateway = React.useMemo(() => {
     if (typeof window === "undefined") {
@@ -60,12 +66,20 @@ export function RouteDetailCard({ route, boardingStarted = false, onBoardingStar
   };
 
   return (
-    <aside aria-label="선택한 경로 상세" className="detail-card">
+    <aside
+      aria-label="선택한 경로 상세"
+      className={isExpanded ? "detail-card detail-card--expanded" : "detail-card"}
+      data-testid="route-detail-card"
+      data-expanded={isExpanded ? "true" : "false"}
+    >
       <div className="detail-card__header">
         <p className="detail-card__eyebrow">선택한 경로</p>
         <h3 className="detail-card__title">{route.summary}</h3>
         <p className="detail-card__duration">총 {route.durationMinutes}분</p>
-        <p className="detail-card__time">{formatTimeLabel(route.departureTime)} 출발 · {formatTimeLabel(route.arrivalTime)} 도착</p>
+        <p className="detail-card__time">
+          {formatTimeLabel(route.departureTime)} 출발 ·{" "}
+          {formatTimeLabel(route.arrivalTime)} 도착
+        </p>
       </div>
       <ul className="segment-list">
         {route.segments.map((segment) => (

@@ -30,7 +30,13 @@ const route: RouteOption = {
 
 describe("RouteDetailCard", () => {
   it("renders Korean transit labels and actions", () => {
-    render(<RouteDetailCard route={route} onBoardingStart={() => undefined} />);
+    render(
+      <RouteDetailCard
+        route={route}
+        isExpanded={false}
+        onBoardingStart={() => undefined}
+      />,
+    );
 
     expect(screen.getByText("Subway Line 4 toward Danggogae")).toBeInTheDocument();
     expect(screen.getByText("4개 역 이동")).toBeInTheDocument();
@@ -39,7 +45,14 @@ describe("RouteDetailCard", () => {
   });
 
   it("shows Korean confirmation messages for favorite save and boarding state", () => {
-    render(<RouteDetailCard route={route} onBoardingStart={() => undefined} boardingStarted />);
+    render(
+      <RouteDetailCard
+        route={route}
+        isExpanded
+        onBoardingStart={() => undefined}
+        boardingStarted
+      />,
+    );
 
     fireEvent.click(screen.getByRole("button", { name: "즐겨찾기 저장" }));
 

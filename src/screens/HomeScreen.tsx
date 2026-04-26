@@ -1,14 +1,23 @@
-﻿import React from "react";
-import { resetAppStore } from "../app/store/appStore";
+import React from "react";
+import {
+  resetAppStore,
+  setHomePresentationState,
+  setResultsPresentationState,
+  useAppStore,
+} from "../app/store/appStore";
 import { searchTransitRoutes } from "../features/routes/api/searchTransitRoutes";
 import type { RouteOption } from "../features/routes/types";
 import { RouteSearchForm } from "../features/routes/components/RouteSearchForm";
 import { ResultsScreen } from "./ResultsScreen";
-import { LocalStorageGateway, type StoredRoute } from "../features/storage/LocalStorageGateway";
+import {
+  LocalStorageGateway,
+  type StoredRoute,
+} from "../features/storage/LocalStorageGateway";
 import { toStoredRoute } from "../features/storage/StorageGateway";
 import { QuickDestinationCard } from "../features/routes/components/QuickDestinationCard";
 
 export function HomeScreen() {
+  const homePresentation = useAppStore((state) => state.presentation.home);
   const [from, setFrom] = React.useState("");
   const [to, setTo] = React.useState("");
   const [isSearching, setIsSearching] = React.useState(false);
@@ -23,6 +32,10 @@ export function HomeScreen() {
   }, []);
 
   React.useEffect(() => {
+    setHomePresentationState("entered");
+  }, []);
+
+  React.useEffect(() => {
     if (!storageGateway) {
       return;
     }
@@ -31,12 +44,15 @@ export function HomeScreen() {
   }, [storageGateway]);
 
   const handleSearch = async () => {
-    setIsSearching(true);
     resetAppStore();
+    setHomePresentationState("searching");
+    setIsSearching(true);
 
     try {
       const nextRoutes = await searchTransitRoutes({ from, to });
       setRoutes(nextRoutes);
+      setHomePresentationState("results_ready");
+      setResultsPresentationState("list_revealed");
 
       if (storageGateway && nextRoutes[0]) {
         storageGateway.saveRecent(toStoredRoute(nextRoutes[0]));
@@ -44,22 +60,40 @@ export function HomeScreen() {
       }
     } catch {
       setRoutes([]);
+      setHomePresentationState("results_ready");
+      setResultsPresentationState("list_revealed");
     } finally {
       setIsSearching(false);
     }
   };
 
   return (
-    <section className="screen screen--home">
+    <section
+      className="screen screen--home"
+      data-testid="home-screen"
+      data-presentation={homePresentation}
+    >
       <div className="hero-card">
         <p className="hero-kicker">도착 알림</p>
         <h2 className="hero-title">지금 어디서 내려야 할지 놓치지 마세요</h2>
-        <p className="hero-copy">대중교통 경로를 선택하면 하차 전과 환승 전에 알림을 보내드려요.</p>
+        <p className="hero-copy">
+          대중교통 경로를 선택하면 하차 전과 환승 전에 알림을 보내드려요.
+        </p>
       </div>
 
       <div className="quick-destination-grid" aria-label="빠른 목적지">
-        <QuickDestinationCard label="집" meta="최근 저장됨" tone="lavender" onSelect={() => setTo("우리 집")} />
-        <QuickDestinationCard label="학교" meta="오전 9시 도착" tone="mint" onSelect={() => setTo("학교")} />
+        <QuickDestinationCard
+          label="집"
+          meta="최근 저장됨"
+          tone="lavender"
+          onSelect={() => setTo("우리 집")}
+        />
+        <QuickDestinationCard
+          label="학교"
+          meta="오전 9시 도착"
+          tone="mint"
+          onSelect={() => setTo("학교")}
+        />
       </div>
 
       <RouteSearchForm
@@ -79,7 +113,10 @@ export function HomeScreen() {
           </div>
           <ul className="recent-route-list">
             {recentRoutes.map((route) => (
-              <li className="recent-route-item" key={`${route.providerRouteId}-${route.savedAt}`}>
+              <li
+                className="recent-route-item"
+                key={`${route.providerRouteId}-${route.savedAt}`}
+              >
                 {route.summary}
               </li>
             ))}
@@ -87,7 +124,11 @@ export function HomeScreen() {
         </section>
       ) : null}
 
-      {isSearching ? <p className="status-copy">경로를 찾는 중이에요.</p> : <ResultsScreen routes={routes} />}
+      {isSearching ? (
+        <p className="status-copy">경로를 찾는 중이에요.</p>
+      ) : (
+        <ResultsScreen routes={routes} />
+      )}
     </section>
   );
 }

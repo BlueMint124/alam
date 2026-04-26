@@ -1,5 +1,5 @@
-﻿import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import React from "react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it } from "vitest";
 import { resetAppStore } from "../app/store/appStore";
 import type { RouteOption } from "../features/routes/types";
@@ -54,20 +54,36 @@ describe("ResultsScreen", () => {
     resetAppStore();
   });
 
-  it("shows Korean recommendation cards and detail actions for a selected route", () => {
+  it("shows Korean recommendation cards and detail actions for a selected route", async () => {
     render(<ResultsScreen routes={routes} />);
 
     expect(screen.getByRole("heading", { name: "경로 추천" })).toBeInTheDocument();
     expect(screen.getByText("추천 경로")).toBeInTheDocument();
     expect(screen.getByText("상세를 보려면 경로를 선택하세요.")).toBeInTheDocument();
+    expect(screen.getByTestId("results-screen")).toHaveAttribute(
+      "data-presentation",
+      "list_revealed",
+    );
 
-    fireEvent.click(screen.getAllByRole("button", { name: "이 경로 자세히 보기" })[0]);
+    fireEvent.click(screen.getByTestId("route-select-google-route-1"));
 
     expect(screen.getByText("Subway Line 4 toward Danggogae")).toBeInTheDocument();
     expect(screen.getByText("4개 역 이동")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "선택된 경로" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "즐겨찾기 저장" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "탑승 시작" })).toBeInTheDocument();
+    expect(screen.getByTestId("route-detail-card")).toHaveAttribute("data-expanded", "false");
+
+    await waitFor(() => {
+      expect(screen.getByTestId("results-screen")).toHaveAttribute(
+        "data-presentation",
+        "detail_expanded",
+      );
+      expect(screen.getByTestId("route-detail-card")).toHaveAttribute(
+        "data-expanded",
+        "true",
+      );
+    });
 
     fireEvent.click(screen.getByRole("button", { name: "탑승 시작" }));
 
