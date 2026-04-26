@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css");
+
+:root {
+  color-scheme: dark;
+  --color-bg: #060b14;
+  --color-surface: rgba(16, 24, 39, 0.9);
+  --color-surface-elevated: rgba(21, 30, 49, 0.96);
+  --color-surface-soft: rgba(255, 255, 255, 0.04);
+  --color-border: rgba(148, 163, 184, 0.16);
+  --color-text: #f3f7ff;
+  --color-muted: #97a6bf;
+  --color-accent-lavender: #a595fd;
+  --color-accent-lavender-glow: rgba(165, 149, 253, 0.22);
+  --color-accent-mint: #7de7c5;
+  --color-accent-mint-glow: rgba(125, 231, 197, 0.18);
+  --color-accent-blue: #8fc7f7;
+  --shadow-shell:
+    0 30px 110px rgba(0, 0, 0, 0.52),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  --shadow-panel: 0 18px 42px rgba(3, 8, 18, 0.35);
+  --shadow-tabbar: 0 18px 32px rgba(3, 8, 18, 0.42);
+  --radius-shell: 36px;
+  --radius-panel: 28px;
+  --radius-pill: 999px;
+  --font-display: "Sora", "Pretendard Variable", system-ui, sans-serif;
+  --font-body: "Pretendard Variable", "Sora", system-ui, sans-serif;
+  --shell-max-width: 430px;
+  --shell-padding: 24px;
+  --shell-padding-tight: 18px;
+  --motion-soft-duration: 220ms;
+  --motion-live-duration: 320ms;
+  --motion-alert-duration: 180ms;
+  --motion-soft-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-live-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --motion-alert-ease: cubic-bezier(0.18, 0.9, 0.32, 1.1);
+}
