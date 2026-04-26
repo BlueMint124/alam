@@ -5,9 +5,15 @@ import { ArrivalAlertModal } from "../features/alerts/components/ArrivalAlertMod
 export function TrackingScreen() {
   const trackingView = useAppStore((state) => state.trackingView);
   const alertOverlay = useAppStore((state) => state.alertOverlay);
+  const playbackMode = useAppStore((state) => state.demoPlayback.mode);
 
   return (
-    <section aria-label="추적 화면" className="screen screen--tracking">
+    <section
+      aria-label="추적 화면"
+      className="screen screen--tracking"
+      data-testid="tracking-screen"
+      data-playback-mode={playbackMode}
+    >
       <div className="tracking-hero-card">
         <p className="tracking-hero-card__kicker">현재 탑승 중</p>
         <h2 className="tracking-hero-card__title">{trackingView.remainingStops}정거장 남았어요</h2>
