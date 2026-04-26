@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import type { SimulationScenario } from "../simulation/SimulationLocationSource";
@@ -20,20 +20,26 @@ const scenario: SimulationScenario = {
 function DebugPanelHarness() {
   const controls = useSimulationControls(scenario);
 
-  return <DebugPanel controls={controls} />;
+  return (
+    <div>
+      <button type="button" onClick={controls.nextEvent}>
+        advance
+      </button>
+      <DebugPanel controls={controls} />
+    </div>
+  );
 }
 
 describe("DebugPanel", () => {
-  it("disables the next button once the replay is complete", () => {
+  it("shows the compact live-activity summary as playback advances", () => {
     render(<DebugPanelHarness />);
 
-    const nextButton = screen.getByRole("button", { name: "다음 이벤트" });
+    expect(screen.getByTestId("live-activity")).toBeInTheDocument();
+    expect(screen.getByText("state: running")).toBeInTheDocument();
 
-    expect(nextButton).toBeEnabled();
+    fireEvent.click(screen.getByRole("button", { name: "advance" }));
 
-    fireEvent.click(nextButton);
-
-    expect(screen.getByText("상태: 완료")).toBeInTheDocument();
-    expect(nextButton).toBeDisabled();
+    expect(screen.getByText("step: 1 / 1")).toBeInTheDocument();
+    expect(screen.getByText("state: complete")).toBeInTheDocument();
   });
 });

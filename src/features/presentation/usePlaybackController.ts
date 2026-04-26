@@ -88,7 +88,10 @@ export function usePlaybackController(
     if (alerts[0]) {
       emittedAlertsRef.current.push(alerts[0].kind);
       setAlertOverlay(toAlertOverlay(alerts[0].kind, demoPlayback.transferThreshold));
-      setAlertPresentationState("active");
+      setAlertPresentationState("opening");
+      window.requestAnimationFrame(() => {
+        setAlertPresentationState("active");
+      });
       setPlaybackMode("alert_open");
       return;
     }
@@ -126,6 +129,7 @@ export function usePlaybackController(
       routeLabel: "",
       etaLabel: "",
     });
+    setTrackingView({ simulationPaused: false });
     setPlaybackMode(
       demoPlayback.currentEventIndex >= demoPlayback.totalEvents ? "completed" : "auto_playing",
     );
@@ -160,6 +164,7 @@ export function usePlaybackController(
       routeLabel: "",
       etaLabel: "",
     });
+    setAlertPresentationState("closing");
     setTrackingPresentationState("live");
     setTrackingView({
       remainingStops: controls.totalEvents,
@@ -170,6 +175,7 @@ export function usePlaybackController(
   }, [controls, demoPlayback.finalThreshold, demoPlayback.transferEnabled, demoPlayback.transferThreshold]);
 
   return {
+    controls,
     pause,
     resume,
     stepForward: runStep,

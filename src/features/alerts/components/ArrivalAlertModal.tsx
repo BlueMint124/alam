@@ -1,18 +1,31 @@
-﻿import React from "react";
+import React from "react";
+import type { AlertPresentationState } from "../../presentation/types";
 import type { AlertOverlayState } from "../../../app/store/appStore";
 
 type ArrivalAlertModalProps = {
   overlay: AlertOverlayState;
+  presentationState: AlertPresentationState;
   onConfirm: () => void;
 };
 
-export function ArrivalAlertModal({ overlay, onConfirm }: ArrivalAlertModalProps) {
+export function ArrivalAlertModal({
+  overlay,
+  presentationState,
+  onConfirm,
+}: ArrivalAlertModalProps) {
   if (!overlay.isOpen) {
     return null;
   }
 
   return (
-    <div className="alert-scrim" role="dialog" aria-modal="true" aria-label={overlay.title}>
+    <div
+      className="alert-scrim"
+      role="dialog"
+      aria-modal="true"
+      aria-label={overlay.title}
+      data-testid="alert-modal"
+      data-state={presentationState}
+    >
       <section className="alert-modal">
         <div className="alert-modal__icon" aria-hidden="true">
           알림
